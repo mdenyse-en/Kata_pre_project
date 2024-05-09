@@ -61,7 +61,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        String query = "delete from users where id = " + id;
+        String query = "DELETE FROM users WHERE id = " + id;
 
         try (Statement statement = util.getStatement()) {
             statement.executeUpdate(query);
@@ -73,7 +73,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> result = new ArrayList<>();
-        String query = "select * from users";
+        String query = "SELECT * FROM users";
 
         try (Statement statement = util.getStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
@@ -97,7 +97,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        String query = "delete from users";
+        String query = "DELETE FROM users";
 
         try (Statement statement = util.getStatement()) {
             statement.executeUpdate(query);
