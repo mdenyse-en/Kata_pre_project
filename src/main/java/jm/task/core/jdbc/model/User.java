@@ -65,9 +65,9 @@ public class User {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(id).append(" ")
-            .append(name).append(" ")
-            .append(lastName).append(" ")
-            .append(age);
+                .append(name).append(" ")
+                .append(lastName).append(" ")
+                .append(age);
 
         return stringBuilder.toString();
     }

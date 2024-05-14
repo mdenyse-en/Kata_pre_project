@@ -13,6 +13,7 @@ public class UserDaoJDBCImpl implements UserDao {
     private Util util;
 
     public UserDaoJDBCImpl() {
+        super();
         try {
             util = new Util();
         } catch (SQLException e) {
