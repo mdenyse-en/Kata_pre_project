@@ -4,7 +4,6 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,9 +32,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = util.getFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(querySQL).addEntity(User.class);
 
-            query.executeUpdate();
+            session.createSQLQuery(querySQL).addEntity(User.class).executeUpdate();
             transaction.commit();
         } catch (SQLException ex) {
             System.out.println("Exception while CREATE table USERS!");
@@ -49,9 +47,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = util.getFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(querySQL).addEntity(User.class);
 
-            query.executeUpdate();
+            session.createSQLQuery(querySQL).addEntity(User.class).executeUpdate();
             transaction.commit();
         } catch (SQLException ex) {
             System.out.println("Exception while DROP table!");
@@ -61,14 +58,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        String querySQL = "INSERT INTO users(name, lastname, age) VALUES('" + name + "', '" + lastName + "', '" + age + "');";
-
         try (Session session = util.getFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(querySQL).addEntity(User.class);
-
-            query.executeUpdate();
-            transaction.commit();
+            session.save(new User(name, lastName, age));
         } catch (SQLException ex) {
             System.out.println("Exception while SAVE USER!");
             ex.printStackTrace();
@@ -77,13 +68,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        String querySQL = "DELETE FROM users WHERE id = " + id;
-
         try (Session session = util.getFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(querySQL).addEntity(User.class);
 
-            query.executeUpdate();
+            session.createQuery("DELETE User WHERE id = :id").setParameter("id", id).executeUpdate();
             transaction.commit();
         } catch (SQLException ex) {
             System.out.println("Exception while REMOVE USER by ID!");
@@ -93,11 +81,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        String querySQL = "select * FROM users";
+        String queryHQL = "FROM User";
         List<User> result = new ArrayList<>();
 
         try (Session session = util.getFactory().openSession()) {
-            result = session.createSQLQuery(querySQL).addEntity(User.class).list();
+            result = session.createQuery(queryHQL, User.class).list();
         } catch (SQLException ex) {
             System.out.println("Exception while GET ALL USERS!");
             ex.printStackTrace();
@@ -107,13 +95,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        String querySQL = "DELETE FROM users";
+        String queryHQL = "DELETE FROM User u";
 
         try (Session session = util.getFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            Query query = session.createSQLQuery(querySQL).addEntity(User.class);
 
-            query.executeUpdate();
+            session.createQuery(queryHQL).executeUpdate();
             transaction.commit();
         } catch (SQLException ex) {
             System.out.println("Exception while CLEAN table!");
